@@ -7,7 +7,7 @@ Public Enum SpeedSetting
     Fast = 1
 End Enum
 
-Public Sub SetSpeed(ByVal Speed As SpeedSetting, Optional ByVal disableAlerts As Boolean = False)
+Public Sub SetSpeed(ByVal Speed As SpeedSetting, Optional ByVal DisableAlerts As Boolean = False)
     With Application
         Select Case Speed
             Case SpeedSetting.Normal
@@ -23,7 +23,7 @@ Public Sub SetSpeed(ByVal Speed As SpeedSetting, Optional ByVal disableAlerts As
                 .DisplayStatusBar = False
         End Select
         
-        .DisplayAlerts = Not disableAlerts
+        .DisplayAlerts = Not DisableAlerts
     End With
 End Sub
 
