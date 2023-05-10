@@ -1,12 +1,3 @@
-VERSION 1.0 CLASS
-BEGIN
-  MultiUse = -1  'True
-END
-Attribute VB_Name = "ClsDataBase"
-Attribute VB_GlobalNameSpace = False
-Attribute VB_Creatable = False
-Attribute VB_PredeclaredId = False
-Attribute VB_Exposed = False
 Option Explicit
 
 'Results array always start in (0, 0)
@@ -22,12 +13,10 @@ Option Explicit
 '        Dim SQL As String
 '        SQL = "SELECT 1 FROM dual"
 '
-'        .SQL = SQL
-'        .ExecuteQuery
+'        .ExecuteQuery SQL
 '
 '        Dim Results As Variant
 '        Results = .Results
-'        .CloseRS
 '
 '        If IsArray(Results) Then
 '            MsgBox Results(0, 0)
@@ -52,8 +41,7 @@ Option Explicit
 '            SQL = SQL & " AND e120ped.codfil = 1"
 '            SQL = SQL & " AND e120ped.numped = 467750"
 '
-'        .SQL = SQL
-'        .ExecuteQuery
+'        .ExecuteQuery SQL
 '    End With
 '
 '    Set DB = Nothing
@@ -77,14 +65,6 @@ Private Type ClassType
 End Type
 
 Private This As ClassType
- 
-Public Property Get SQL() As String
-    SQL = This.SQL
-End Property
-
-Public Property Let SQL(ByVal Value As String)
-    This.SQL = Value
-End Property
 
 Public Property Let Results(ByVal Value As Variant)
     This.Results = Value
@@ -94,7 +74,7 @@ Public Property Get Results() As Variant
     Results = This.Results
 End Property
 
-Public Sub ExecuteQuery()
+Public Sub ExecuteQuery(ByVal SQL As String)
     Const adCmdText As Byte = 1
     Const adOpenStatic As Byte = 3
     Const adLockReadOnly As Byte = 1
@@ -108,8 +88,12 @@ Public Sub ExecuteQuery()
         Connection.Execute SQL, , adCmdText
     Else
         Set RecordSet = CreateObject("ADODB.Recordset")
+        
         RecordSet.Open SQL, Connection, adOpenStatic, adLockReadOnly
         Results = RecordSetToArray(RecordSet)
+        RecordSet.Close
+        
+        Set RecordSet = Nothing
     End If
     
     Exit Sub
@@ -130,11 +114,6 @@ End Sub
 Private Sub Class_Terminate()
     Connection.Close
     Set Connection = Nothing
-End Sub
-
-Public Sub CloseRS()
-    RecordSet.Close
-    Set RecordSet = Nothing
 End Sub
 
 Private Function RecordSetToArray(ByVal RecordSet As Object) As Variant
