@@ -22,7 +22,7 @@ Option Explicit
 '        Dim SQL As String
 '        SQL = "SELECT 1 FROM dual"
 '
-'        .ExecuteQuery SQL
+'        .ExecuteQuery SQL, "SELECT"
 '
 '        Dim Results As Variant
 '        Results = .Results
@@ -50,7 +50,7 @@ Option Explicit
 '            SQL = SQL & " AND e120ped.codfil = 1"
 '            SQL = SQL & " AND e120ped.numped = 467750"
 '
-'        .ExecuteQuery SQL
+'        .ExecuteQuery SQL, "UPDATE"
 '    End With
 '
 '    Set DB = Nothing
@@ -83,14 +83,11 @@ Public Property Get Results() As Variant
     Results = This.Results
 End Property
 
-Public Sub ExecuteQuery(ByVal SQL As String)
+Public Sub ExecuteQuery(ByVal SQL As String, ByVal QueryType As String)
     Const adCmdText As Byte = 1
     Const adOpenStatic As Byte = 3
     Const adLockReadOnly As Byte = 1
-    
-    Dim QueryType As String
-    QueryType = UCase$(Left$(SQL, 6))
-    
+
     On Error GoTo ErrorHandler
     
     If QueryType = "SELECT" Then
