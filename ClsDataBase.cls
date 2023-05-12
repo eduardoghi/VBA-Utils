@@ -93,9 +93,7 @@ Public Sub ExecuteQuery(ByVal SQL As String)
     
     On Error GoTo ErrorHandler
     
-    If QueryType = "UPDATE" Or QueryType = "INSERT" Or QueryType = "DELETE" Then
-        Connection.Execute SQL, , adCmdText
-    Else
+    If QueryType = "SELECT" Then
         Set RecordSet = CreateObject("ADODB.Recordset")
         
         RecordSet.Open SQL, Connection, adOpenStatic, adLockReadOnly
@@ -103,6 +101,8 @@ Public Sub ExecuteQuery(ByVal SQL As String)
         RecordSet.Close
         
         Set RecordSet = Nothing
+    Else
+        Connection.Execute SQL, , adCmdText
     End If
     
     Exit Sub
