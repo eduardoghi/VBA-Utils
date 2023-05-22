@@ -63,12 +63,14 @@ Private Sub ClearFilters(ByVal ws As Worksheet)
     Dim Table As ListObject
     
     For Each Table In ws.ListObjects
-        If Table.ShowAutoFilter Then
-            If Table.AutoFilter.FilterMode Then Table.AutoFilter.ShowAllData
-        End If
-        Table.ShowAutoFilter = False
-        
-        Table.Range.AutoFilter
-        Table.Sort.SortFields.Clear
+        With Table
+            If .ShowAutoFilter Then
+                If .AutoFilter.FilterMode Then .AutoFilter.ShowAllData
+            End If
+            .ShowAutoFilter = False
+            
+            .Range.AutoFilter
+            .Sort.SortFields.Clear
+        End With
     Next
 End Sub
