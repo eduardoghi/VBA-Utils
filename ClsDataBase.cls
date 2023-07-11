@@ -24,11 +24,8 @@ Option Explicit
 '
 '        .ExecuteQuery SQL, "SELECT"
 '
-'        Dim Results As Variant
-'        Results = .Results
-'
-'        If IsArray(Results) Then
-'            MsgBox Results(0, 0)
+'        If IsArray(.Results) Then
+'            MsgBox .Results(0, 0)
 '        End If
 '    End With
 '
