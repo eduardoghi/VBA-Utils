@@ -91,7 +91,13 @@ Public Sub ExecuteQuery(ByVal SQL As String, ByVal QueryType As String)
         Set RecordSet = CreateObject("ADODB.Recordset")
         
         RecordSet.Open SQL, Connection, adOpenStatic, adLockReadOnly
-        Results = RecordSetToArray(RecordSet)
+        Dim tempResults As Variant
+        tempResults = RecordSetToArray(RecordSet)
+        If Not IsEmpty(tempResults) Then
+            Results = tempResults
+        Else
+            Results = Empty
+        End If
         RecordSet.Close
         
         Set RecordSet = Nothing
