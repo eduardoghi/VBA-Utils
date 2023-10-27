@@ -32,7 +32,7 @@ Public Function Delay(ByVal MilliSeconds As Long) As Variant
     Do While Timer < Delay: DoEvents: Loop
 End Function
 
-Private Sub PasteDataIntoTable(ByVal Data As Variant, ByVal ws As Worksheet, ByVal TableName As String)
+Public Sub PasteDataIntoTable(ByVal Data As Variant, ByVal ws As Worksheet, ByVal TableName As String)
     ClearFilters ws
 
     Dim Table As ListObject
@@ -42,6 +42,12 @@ Private Sub PasteDataIntoTable(ByVal Data As Variant, ByVal ws As Worksheet, ByV
         ' Check if the table has any data
         If .ListRows.Count > 0 Then
             .DataBodyRange.Value2 = vbNullString
+        End If
+          
+        Dim HasTotal As Boolean
+        If .ShowTotals = True Then
+            HasTotal = True
+            .ShowTotals = False
         End If
 
         ' Resize the table to fit the incoming data
@@ -55,6 +61,10 @@ Private Sub PasteDataIntoTable(ByVal Data As Variant, ByVal ws As Worksheet, ByV
             Next
         Else
             .DataBodyRange.Value = Data
+        End If
+        
+        If HasTotal Then
+            .ShowTotals = True
         End If
     End With
 End Sub
