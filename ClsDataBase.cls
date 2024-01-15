@@ -66,7 +66,6 @@ Private Const USER As String = ""
 Private Const PASSWORD As String = ""
 
 Private Type ClassType
-    SQL As String
     Results As Variant
 End Type
 
