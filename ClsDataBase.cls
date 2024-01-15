@@ -54,7 +54,6 @@ Option Explicit
 'End Sub
 
 Private Connection As Object
-Private RecordSet As Object
 
 Private Const PROVIDER As String = "OraOLEDB.Oracle.1"
 Private Const PROTOCOL As String = "TCP"
@@ -87,6 +86,7 @@ Public Sub ExecuteQuery(ByVal SQL As String, ByVal QueryType As String)
     On Error GoTo ErrorHandler
     
     If QueryType = "SELECT" Then
+        Dim RecordSet as Object
         Set RecordSet = CreateObject("ADODB.Recordset")
         
         RecordSet.Open SQL, Connection, adOpenStatic, adLockReadOnly
