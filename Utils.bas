@@ -51,7 +51,7 @@ Public Sub PasteDataIntoTable(ByVal Data As Variant, ByVal ws As Worksheet, ByVa
         End If
 
         ' Resize the table to fit the incoming data
-        .Resize ws.Range(.Range.Cells(1, 1), ws.Cells(.HeaderRowRange.Row + UBound(Data) + 1, .ListColumns.Count + .Range.Cells(1, 1).Column - 1))
+        .Resize ws.Range(.Range.Cells(1, 1), ws.Cells(.HeaderRowRange.Row + UBound(Data) - LBound(Data) + 1, .ListColumns.Count + .Range.Cells(1, 1).Column - 1))
 
         ' Check if the incoming data is a single row
         If UBound(Data) = 0 Then
