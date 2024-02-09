@@ -69,6 +69,15 @@ Public Sub PasteDataIntoTable(ByVal Data As Variant, ByVal ws As Worksheet, ByVa
     End With
 End Sub
 
+Public Sub ExecuteShellWait(ByVal cmd As String)
+    Dim objShell As Object
+    Set objShell = CreateObject("WScript.Shell")
+    
+    objShell.Run cmd, 0, True
+    
+    Set objShell = Nothing
+End Sub
+
 Private Sub ClearFilters(ByVal ws As Worksheet)
     Dim Table As ListObject
     
