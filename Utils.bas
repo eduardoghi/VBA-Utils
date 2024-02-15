@@ -54,10 +54,13 @@ Public Sub PasteDataIntoTable(ByVal Data As Variant, ByVal ws As Worksheet, ByVa
         .Resize ws.Range(.Range.Cells(1, 1), ws.Cells(.HeaderRowRange.Row + UBound(Data) - LBound(Data) + 1, .ListColumns.Count + .Range.Cells(1, 1).Column - 1))
 
         ' Check if the incoming data is a single row
-        If UBound(Data) = 0 Then
+        If LBound(Data) = UBound(Data) Then
+            Dim j As Long
+            If LBound(Data, 2) = 0 Then j = 1
+            
             Dim i As Long
             For i = 1 To Table.Range.Columns.Count
-                .Range(2, i).Value2 = Data(0, i - 1)
+                .Range(2, i).Value2 = Data(LBound(Data), i - j)
             Next
         Else
             .DataBodyRange.Value = Data
