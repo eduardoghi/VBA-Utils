@@ -1,91 +1,90 @@
-Attribute VB_Name = "Utils"
 Option Explicit
 Option Private Module
 
-Public Enum speed_setting
-    normal = 0
-    fast = 1
+Public Enum SpeedSetting
+    Normal = 0
+    Fast = 1
 End Enum
 
-Public Sub set_speed(ByVal speed As speed_setting, Optional ByVal disable_alerts As Boolean = False)
+Public Sub SetSpeed(ByVal Speed As SpeedSetting, Optional ByVal DisableAlerts As Boolean = False)
     With Application
-        Select Case speed
-            Case speed_setting.normal
+        Select Case Speed
+            Case SpeedSetting.Normal
                 .ScreenUpdating = True
                 .Calculation = xlCalculationAutomatic
                 .EnableEvents = True
                 .DisplayStatusBar = True
                 
-            Case speed_setting.fast
+            Case SpeedSetting.Fast
                 .ScreenUpdating = False
                 .Calculation = xlCalculationManual
                 .EnableEvents = False
                 .DisplayStatusBar = False
         End Select
         
-        .DisplayAlerts = Not disable_alerts
+        .DisplayAlerts = Not DisableAlerts
     End With
 End Sub
 
-Public Function delay(ByVal milli_seconds As Long) As Variant
-    delay = Timer + milli_seconds / 1000
-    Do While Timer < delay: DoEvents: Loop
+Public Function Delay(ByVal MilliSeconds As Long) As Variant
+    Delay = Timer + MilliSeconds / 1000
+    Do While Timer < Delay: DoEvents: Loop
 End Function
 
-Public Sub paste_data_into_table(ByVal data As Variant, ByVal ws As Worksheet, ByVal table_name As String)
-    clear_filters ws
+Public Sub PasteDataIntoTable(ByVal Data As Variant, ByVal ws As Worksheet, ByVal TableName As String)
+    ClearFilters ws
 
-    Dim table As ListObject
-    Set table = ws.ListObjects(table_name)
+    Dim Table As ListObject
+    Set Table = ws.ListObjects(TableName)
 
-    With table
+    With Table
         ' Check if the table has any data
         If .ListRows.Count > 0 Then
             .DataBodyRange.Value2 = vbNullString
         End If
           
-        Dim has_total As Boolean
+        Dim HasTotal As Boolean
         If .ShowTotals = True Then
-            has_total = True
+            HasTotal = True
             .ShowTotals = False
         End If
         
         ' Resize the table to fit the incoming data
-        .Resize ws.Range(.Range.Cells(1, 1), ws.Cells(.HeaderRowRange.Row + UBound(data) - LBound(data) + 1, .ListColumns.Count + .Range.Cells(1, 1).Column - 1))
+        .Resize ws.Range(.Range.Cells(1, 1), ws.Cells(.HeaderRowRange.Row + UBound(Data) - LBound(Data) + 1, .ListColumns.Count + .Range.Cells(1, 1).Column - 1))
 
         ' Check if the incoming data is a single row
-        If LBound(data) = UBound(data) Then
+        If LBound(Data) = UBound(Data) Then
             Dim j As Long
-            If LBound(data, 2) = 0 Then j = 1
+            If LBound(Data, 2) = 0 Then j = 1
             
             Dim i As Long
-            For i = 1 To table.Range.Columns.Count
-                .Range(2, i).Value2 = data(LBound(data), i - j)
+            For i = 1 To Table.Range.Columns.Count
+                .Range(2, i).Value2 = Data(LBound(Data), i - j)
             Next
         Else
-            .DataBodyRange.Value = data
+            .DataBodyRange.Value = Data
         End If
         
-        If has_total Then
+        If HasTotal Then
             .ShowTotals = True
         End If
     End With
 End Sub
 
-Public Sub execute_shell_wait(ByVal cmd As String)
-    Dim shell As Object
-    Set shell = CreateObject("WScript.Shell")
+Public Sub ExecuteShellWait(ByVal cmd As String)
+    Dim Shell As Object
+    Set Shell = CreateObject("WScript.Shell")
     
-    shell.Run cmd, 0, True
+    Shell.Run cmd, 0, True
     
-    Set shell = Nothing
+    Set Shell = Nothing
 End Sub
 
-Private Sub clear_filters(ByVal ws As Worksheet)
-    Dim table As ListObject
+Private Sub ClearFilters(ByVal ws As Worksheet)
+    Dim Table As ListObject
     
-    For Each table In ws.ListObjects
-        With table
+    For Each Table In ws.ListObjects
+        With Table
             If .ShowAutoFilter Then
                 If .AutoFilter.FilterMode Then .AutoFilter.ShowAllData
             End If
