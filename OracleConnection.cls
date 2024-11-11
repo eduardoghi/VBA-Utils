@@ -46,3 +46,34 @@ Public Sub CloseConnection()
         Set conn = Nothing
     End If
 End Sub
+
+Public Sub BeginTransaction()
+    On Error GoTo ErrorHandler
+    
+    conn.BeginTrans
+    Exit Sub
+
+ErrorHandler:
+    MsgBox "Erro ao iniciar a transação: " & Err.Description, vbCritical
+End Sub
+
+Public Sub CommitTransaction()
+    On Error GoTo ErrorHandler
+    
+    conn.CommitTrans
+    Exit Sub
+
+ErrorHandler:
+    MsgBox "Erro ao confirmar a transação: " & Err.Description & ". Realizando rollback.", vbCritical
+    RollbackTransaction
+End Sub
+
+Public Sub RollbackTransaction()
+    On Error GoTo ErrorHandler
+    
+    conn.RollbackTrans
+    Exit Sub
+
+ErrorHandler:
+    MsgBox "Erro ao reverter a transação: " & Err.Description, vbCritical
+End Sub
