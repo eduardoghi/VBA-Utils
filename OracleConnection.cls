@@ -15,15 +15,17 @@ Public Sub Initialize(ByVal connection As Object)
     Set conn = connection
 End Sub
 
-Public Sub ExecuteNonQuery(ByVal sql As String)
+Public Function ExecuteNonQuery(ByVal sql As String, Optional ByRef affectedRows As Long = -1) As Boolean
     On Error GoTo ErrorHandler
     
-    conn.Execute sql
-    Exit Sub
+    conn.Execute sql, affectedRows
+    ExecuteNonQuery = True
+    Exit Function
 
 ErrorHandler:
     MsgBox "Erro ao executar a consulta: " & Err.Description, vbCritical
-End Sub
+    ExecuteNonQuery = False
+End Function
 
 Public Function ExecuteQuery(ByVal sql As String) As Object
     Dim rs As Object
