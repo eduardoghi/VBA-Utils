@@ -27,12 +27,36 @@ ErrorHandler:
     ExecuteNonQuery = False
 End Function
 
-Public Function ExecuteQuery(ByVal sql As String) As Object
+Public Function ExecuteQuery(ByVal sql As String, ParamArray params() As Variant) As Object
+    Dim cmd As Object
     Dim rs As Object
+    Dim i As Integer
     On Error GoTo ErrorHandler
     
+    Set cmd = CreateObject("ADODB.Command")
+    Set cmd.ActiveConnection = conn
+    cmd.CommandText = sql
+    cmd.CommandType = 1 ' adCmdText
+    
+    For i = LBound(params) To UBound(params) Step 2
+        Dim paramType As Integer
+        paramType = GetADOType(params(i + 1))
+        
+        Dim paramSize As Integer
+        If paramType = 200 Then
+            paramSize = Len(params(i + 1))
+        Else
+            paramSize = 0
+        End If
+        
+        Dim param As Object
+        Set param = cmd.CreateParameter(params(i), paramType, 1, paramSize, params(i + 1)) ' 1 = adParamInput
+        cmd.Parameters.Append param
+    Next i
+    
     Set rs = CreateObject("ADODB.Recordset")
-    rs.Open sql, conn, 3 'adOpenStatic
+    rs.CursorType = 3 ' adOpenStatic
+    rs.Open cmd
     
     Set ExecuteQuery = rs
     Exit Function
@@ -40,6 +64,29 @@ Public Function ExecuteQuery(ByVal sql As String) As Object
 ErrorHandler:
     MsgBox "Erro ao executar a consulta: " & Err.Description, vbCritical
     Set ExecuteQuery = Nothing
+End Function
+
+Private Function GetADOType(v As Variant) As Integer
+    Select Case VarType(v)
+        Case vbInteger
+            GetADOType = 3 ' adInteger
+        Case vbLong
+            GetADOType = 3 ' adInteger
+        Case vbSingle
+            GetADOType = 4 ' adSingle
+        Case vbDouble
+            GetADOType = 5 ' adDouble
+        Case vbCurrency
+            GetADOType = 6 ' adCurrency
+        Case vbDate
+            GetADOType = 7 ' adDate
+        Case vbString
+            GetADOType = 200 ' adVarChar
+        Case vbBoolean
+            GetADOType = 11 ' adBoolean
+        Case Else
+            GetADOType = 200 ' adVarChar
+    End Select
 End Function
 
 Public Sub CloseConnection()
