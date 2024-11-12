@@ -32,6 +32,9 @@ Public Function Delay(ByVal MilliSeconds As Long) As Variant
 End Function
 
 Public Sub PasteDataIntoTable(ByVal Data As Variant, ByVal ws As Worksheet, ByVal TableName As String)
+    Dim j As Long
+    Dim i As Long
+
     ClearFilters ws
 
     Dim Table As ListObject
@@ -43,26 +46,44 @@ Public Sub PasteDataIntoTable(ByVal Data As Variant, ByVal ws As Worksheet, ByVa
             .DataBodyRange.Value2 = vbNullString
         End If
           
+        ' Temporarily disable the Total Row to prevent issues during data insertion
         Dim HasTotal As Boolean
-        If .ShowTotals = True Then
+        If .ShowTotals Then
             HasTotal = True
             .ShowTotals = False
         End If
         
-        ' Resize the table to fit the incoming data
-        .Resize ws.Range(.Range.Cells(1, 1), ws.Cells(.HeaderRowRange.Row + UBound(Data) - LBound(Data) + 1, .ListColumns.Count + .Range.Cells(1, 1).Column - 1))
-
-        ' Check if the incoming data is a single row
-        If LBound(Data) = UBound(Data) Then
-            Dim j As Long
-            If LBound(Data, 2) = 0 Then j = 1
+        If TypeName(Data) = "Recordset" Then
+            If Not Data.EOF And Not Data Is Nothing Then
+                Data.MoveLast
+                
+                Dim RecordCount As Long
+                RecordCount = Data.RecordCount
+                
+                Data.MoveFirst
+                
+                .Resize ws.Range(.Range.Cells(1, 1), ws.Cells(.HeaderRowRange.Row + RecordCount, .ListColumns.Count + .Range.Cells(1, 1).Column - 1))
+    
+                For i = 1 To RecordCount
+                    For j = 1 To Data.Fields.Count
+                        .DataBodyRange.Cells(i, j).Value = Data.Fields(j - 1).Value
+                    Next
+                    Data.MoveNext
+                Next
+            End If
+        ElseIf IsArray(Data) Then
+            .Resize ws.Range(.Range.Cells(1, 1), ws.Cells(.HeaderRowRange.Row + UBound(Data) - LBound(Data) + 1, .ListColumns.Count + .Range.Cells(1, 1).Column - 1))
             
-            Dim i As Long
-            For i = 1 To Table.Range.Columns.Count
-                .Range(2, i).Value2 = Data(LBound(Data), i - j)
-            Next
-        Else
-            .DataBodyRange.Value = Data
+            ' Check if the incoming data is a single row
+            If LBound(Data) = UBound(Data) Then
+                If LBound(Data, 2) = 0 Then j = 1
+                
+                For i = 1 To Table.Range.Columns.Count
+                    .Range(2, i).Value2 = Data(LBound(Data), i - j)
+                Next
+            Else
+                .DataBodyRange.Value = Data
+            End If
         End If
         
         If HasTotal Then
