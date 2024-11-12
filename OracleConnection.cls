@@ -49,6 +49,11 @@ Public Sub CloseConnection()
     End If
 End Sub
 
+Public Function IsConnected() As Boolean
+    On Error Resume Next
+    IsConnected = Not (conn Is Nothing Or conn.State = 0)
+End Function
+
 Public Sub BeginTransaction()
     On Error GoTo ErrorHandler
     
