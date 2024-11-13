@@ -117,7 +117,7 @@ Private Sub ClearFilters(ByVal ws As Worksheet)
     Next
 End Sub
 
-Private Sub KillProcessAndChildren(ByVal parentId As Long)
+Public Sub KillProcessAndChildren(ByVal parentId As Long)
     Dim wmi As Object
     Set wmi = GetObject("winmgmts:\\.\root\cimv2")
     
