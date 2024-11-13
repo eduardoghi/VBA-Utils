@@ -116,3 +116,16 @@ Private Sub ClearFilters(ByVal ws As Worksheet)
         End With
     Next
 End Sub
+
+Private Sub KillProcessAndChildren(ByVal parentId As Long)
+    Dim wmi As Object
+    Set wmi = GetObject("winmgmts:\\.\root\cimv2")
+    
+    Dim processes As Object
+    Set processes = wmi.ExecQuery("SELECT * FROM Win32_Process WHERE ParentProcessId = " & parentId & " OR ProcessId = " & parentId)
+    
+    Dim proc As Object
+    For Each proc In processes
+        proc.Terminate
+    Next
+End Sub
