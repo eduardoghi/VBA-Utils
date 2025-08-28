@@ -50,7 +50,7 @@ Public Function RecordSetToArray(ByVal RecordSet As Object) As Variant
                 Dim j As Long
                 For j = 0 To .Fields.Count - 1
                     arr(i, j) = .Fields.Item(j).Value
-                Next
+                Next j
                 i = i + 1
                 .MoveNext
             Loop

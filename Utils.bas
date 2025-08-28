@@ -1,3 +1,4 @@
+Attribute VB_Name = "Utils"
 Option Explicit
 Option Private Module
 
@@ -67,9 +68,9 @@ Public Sub PasteDataIntoTable(ByVal Data As Variant, ByVal ws As Worksheet, ByVa
                 For i = 1 To RecordCount
                     For j = 1 To Data.Fields.Count
                         .DataBodyRange.Cells(i, j).Value = Data.Fields(j - 1).Value
-                    Next
+                    Next j
                     Data.MoveNext
-                Next
+                Next i
             End If
         ElseIf IsArray(Data) Then
             .Resize ws.Range(.Range.Cells(1, 1), ws.Cells(.HeaderRowRange.Row + UBound(Data) - LBound(Data) + 1, .ListColumns.Count + .Range.Cells(1, 1).Column - 1))
@@ -80,7 +81,7 @@ Public Sub PasteDataIntoTable(ByVal Data As Variant, ByVal ws As Worksheet, ByVa
                 
                 For i = 1 To Table.Range.Columns.Count
                     .Range(2, i).Value2 = Data(LBound(Data), i - j)
-                Next
+                Next i
             Else
                 .DataBodyRange.Value = Data
             End If
@@ -114,7 +115,7 @@ Private Sub ClearFilters(ByVal ws As Worksheet)
             .Range.AutoFilter
             .Sort.SortFields.Clear
         End With
-    Next
+    Next Table
 End Sub
 
 Public Sub KillProcessAndChildren(ByVal parentId As Long)
@@ -127,5 +128,5 @@ Public Sub KillProcessAndChildren(ByVal parentId As Long)
     Dim proc As Object
     For Each proc In processes
         proc.Terminate
-    Next
+    Next proc
 End Sub

@@ -28,21 +28,20 @@ ErrorHandler:
 End Function
 
 Public Function ExecuteQuery(ByVal sql As String, ParamArray params() As Variant) As Object
-    Dim cmd As Object
-    Dim rs As Object
-    Dim i As Integer
     On Error GoTo ErrorHandler
     
+    Dim cmd As Object
     Set cmd = CreateObject("ADODB.Command")
     Set cmd.ActiveConnection = conn
     cmd.CommandText = sql
     cmd.CommandType = 1 ' adCmdText
     
+    Dim i As Long
     For i = LBound(params) To UBound(params) Step 2
-        Dim paramType As Integer
+        Dim paramType As Long
         paramType = GetADOType(params(i + 1))
         
-        Dim paramSize As Integer
+        Dim paramSize As Long
         If paramType = 200 Then
             paramSize = Len(params(i + 1))
         Else
@@ -54,6 +53,7 @@ Public Function ExecuteQuery(ByVal sql As String, ParamArray params() As Variant
         cmd.Parameters.Append param
     Next i
     
+    Dim rs As Object
     Set rs = CreateObject("ADODB.Recordset")
     rs.CursorType = 3 ' adOpenStatic
     rs.Open cmd
@@ -66,8 +66,8 @@ ErrorHandler:
     Set ExecuteQuery = Nothing
 End Function
 
-Private Function GetADOType(v As Variant) As Integer
-    Select Case VarType(v)
+Private Function GetADOType(ByRef paramValue As Variant) As Integer
+    Select Case VarType(paramValue)
         Case vbInteger
             GetADOType = 3 ' adInteger
         Case vbLong
