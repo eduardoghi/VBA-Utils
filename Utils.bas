@@ -129,4 +129,10 @@ Public Sub KillProcessAndChildren(ByVal parentId As Long)
     For Each proc In processes
         proc.Terminate
     Next proc
+
 End Sub
+
+Public Function IsWorkbookOpen(ByVal workbookName As String) As Boolean
+    On Error Resume Next
+    IsWorkbookOpen = Not Workbooks(workbookName) Is Nothing
+End Function
