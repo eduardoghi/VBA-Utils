@@ -29,15 +29,8 @@ Public Function ExecuteQueryArray(ByVal sql As String, ParamArray params() As Va
 End Function
 
 Public Function ExecuteNonQuery(ByVal sql As String, Optional ByRef affectedRows As Long = -1) As Boolean
-    On Error GoTo ErrorHandler
-    
     conn.Execute sql, affectedRows
     ExecuteNonQuery = True
-    Exit Function
-
-ErrorHandler:
-    MsgBox "Erro ao executar a consulta: " & Err.Description, vbCritical
-    ExecuteNonQuery = False
 End Function
 
 Public Function ExecuteQuery(ByVal sql As String, ParamArray params() As Variant) As Object
@@ -74,11 +67,6 @@ Public Function ExecuteQuery(ByVal sql As String, ParamArray params() As Variant
     rs.Open cmd
     
     Set ExecuteQuery = rs
-    Exit Function
-
-ErrorHandler:
-    MsgBox "Erro ao executar a consulta: " & Err.Description, vbCritical
-    Set ExecuteQuery = Nothing
 End Function
 
 Private Function GetADOType(ByRef paramValue As Variant) As Integer
@@ -117,34 +105,15 @@ Public Function IsConnected() As Boolean
 End Function
 
 Public Sub BeginTransaction()
-    On Error GoTo ErrorHandler
-    
     conn.BeginTrans
-    Exit Sub
-
-ErrorHandler:
-    MsgBox "Erro ao iniciar a transação: " & Err.Description, vbCritical
 End Sub
 
 Public Sub CommitTransaction()
-    On Error GoTo ErrorHandler
-    
     conn.CommitTrans
-    Exit Sub
-
-ErrorHandler:
-    MsgBox "Erro ao confirmar a transação: " & Err.Description & ". Realizando rollback.", vbCritical
-    RollbackTransaction
 End Sub
 
 Public Sub RollbackTransaction()
-    On Error GoTo ErrorHandler
-    
     conn.RollbackTrans
-    Exit Sub
-
-ErrorHandler:
-    MsgBox "Erro ao reverter a transação: " & Err.Description, vbCritical
 End Sub
 
 Private Function RecordSetToArray(ByVal RecordSet As Object) As Variant
