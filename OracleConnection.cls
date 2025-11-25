@@ -34,8 +34,6 @@ Public Function ExecuteNonQuery(ByVal sql As String, Optional ByRef affectedRows
 End Function
 
 Public Function ExecuteQuery(ByVal sql As String, ParamArray params() As Variant) As Object
-    On Error GoTo ErrorHandler
-    
     Dim cmd As Object
     Set cmd = CreateObject("ADODB.Command")
     Set cmd.ActiveConnection = conn
@@ -139,3 +137,4 @@ Private Function RecordSetToArray(ByVal RecordSet As Object) As Variant
 
     RecordSetToArray = arr
 End Function
+
